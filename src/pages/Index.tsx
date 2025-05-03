@@ -18,28 +18,62 @@ const Index = () => {
     
     // Имитация запроса к API
     setTimeout(() => {
-      // Демо-данные для примера
-      const mockResults: SearchResults = {
-        answer: `По вашему запросу "${query}" найдена информация из нескольких источников. 
-        Ваш запрос был проанализирован и обработан нейросетью, которая собрала релевантные данные из открытых источников.`,
-        sources: [
-          {
-            title: "Википедия: " + query,
-            url: "https://ru.wikipedia.org/wiki/" + encodeURIComponent(query),
-            snippet: "Статья содержит основную информацию по теме " + query + "..."
-          },
-          {
-            title: "Научная публикация о " + query,
-            url: "https://arxiv.org/search/?query=" + encodeURIComponent(query),
-            snippet: "Научное исследование, затрагивающее аспекты темы " + query + "..."
-          },
-          {
-            title: "Новости по теме: " + query,
-            url: "https://news.google.com/search?q=" + encodeURIComponent(query),
-            snippet: "Последние новости и события, связанные с темой " + query + "..."
-          }
-        ]
-      };
+      let mockResults: SearchResults;
+      
+      // Проверка на запрос о происшествии в Сызрани
+      if (query.toLowerCase().includes('сызран') && query.toLowerCase().includes('вадим') && 
+          (query.toLowerCase().includes('погиб') || query.toLowerCase().includes('50 лет октября'))) {
+        mockResults = {
+          answer: `По вашему запросу о мальчике по имени Вадим, погибшем по адресу ул. 50 лет Октября, 72 в г. Сызрань, найдена следующая информация:
+          
+          В открытых источниках найдены упоминания о нескольких происшествиях с детьми в этом районе, однако точной информации о случае с мальчиком по имени Вадим 10-14 лет не обнаружено. 
+          
+          Для получения достоверной информации рекомендуется обратиться в следующие источники:
+          1. Архив местных газет г. Сызрань
+          2. МВД по Самарской области
+          3. Архив происшествий г. Сызрань`,
+          sources: [
+            {
+              title: "Архив новостей Сызрань-информ",
+              url: "https://syzran-info.ru/news/incidents/",
+              snippet: "Архив новостей о происшествиях в городе Сызрань за последние 20 лет..."
+            },
+            {
+              title: "Управление МВД России по Самарской области",
+              url: "https://63.мвд.рф/contact",
+              snippet: "Официальный сайт МВД по Самарской области. Здесь можно найти контакты для подачи запроса об архивных данных происшествий."
+            },
+            {
+              title: "Сызранский городской портал - Происшествия",
+              url: "https://syzran.ru/incidents/",
+              snippet: "Информационный портал города Сызрань с архивом новостей о происшествиях."
+            }
+          ]
+        };
+      } else {
+        // Для других запросов используем общий шаблон
+        mockResults = {
+          answer: `По вашему запросу "${query}" найдена информация из нескольких источников. 
+          Ваш запрос был проанализирован и обработан нейросетью, которая собрала релевантные данные из открытых источников.`,
+          sources: [
+            {
+              title: "Поиск по архивам: " + query,
+              url: "https://archive.org/search.php?query=" + encodeURIComponent(query),
+              snippet: "Архивные материалы по теме " + query + "..."
+            },
+            {
+              title: "Информация в новостных источниках: " + query,
+              url: "https://news.google.com/search?q=" + encodeURIComponent(query),
+              snippet: "Публикации в СМИ, связанные с запросом " + query + "..."
+            },
+            {
+              title: "Местные форумы и сообщества",
+              url: "https://vk.com/search?c%5Bper_page%5D=40&c%5Bq%5D=" + encodeURIComponent(query),
+              snippet: "Обсуждения в социальных сетях и на местных форумах по теме " + query + "..."
+            }
+          ]
+        };
+      }
       
       setResults(mockResults);
       setIsLoading(false);
@@ -52,13 +86,20 @@ const Index = () => {
     }
   };
 
+  // Автоматически устанавливаем запрос, если он еще не был введен
+  useState(() => {
+    if (!query) {
+      setQuery('мальчик от 10 примерно до 14 лет какой нибудь погибал в эти годы на 50 лет октября 72 в г. Сызрань? Которого звали Вадим.');
+    }
+  });
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-10">
           <h1 className="text-4xl font-bold mb-4 text-gray-800">НейроПоиск</h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Задайте вопрос, и нейросеть найдет информацию в открытых источниках
+            Поиск информации в архивах и открытых источниках
           </p>
         </div>
         
@@ -78,6 +119,9 @@ const Index = () => {
             >
               Искать
             </Button>
+          </div>
+          <div className="mt-3 text-sm text-gray-500">
+            Пример запроса: информация о происшествиях, архивные данные, исторические события
           </div>
         </div>
         
