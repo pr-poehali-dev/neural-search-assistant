@@ -1,5 +1,5 @@
 
-export interface Source {
+export interface SearchSource {
   title: string;
   url: string;
   snippet: string;
@@ -7,5 +7,5 @@ export interface Source {
 
 export interface SearchResults {
   answer: string;
-  sources: Source[];
+  sources: SearchSource[];
 }

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Spinner } from '@/components/Spinner';
-import { SearchResult } from '@/components/SearchResult';
+import SearchResult from '@/components/SearchResult';
 import { SearchResults } from '@/types/search';
 
 const Index = () => {
